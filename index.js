@@ -3,6 +3,7 @@ const ytdl = require('ytdl-core');
 const configs = require('./config.json');
 const google = require('googleapis');
 const bot = new Discord.Client();
+const fs = require('fs');
 
 const youtube = new google.youtube_v3.Youtube({
     version: 'v3',
@@ -11,14 +12,21 @@ const youtube = new google.youtube_v3.Youtube({
 
 const prefixo = configs.prefix;
 
-const servidores = {
-    'server': {
+const servidores = [];
+
+bot.on("guildCreat", (guild) => {
+    console.log('Id da guilda onde eu entrei: ' + guild.id);
+    console.log('Nome da guilda onde eu entrei: ' + guild.name);
+
+    servidores[guild.id] = {
         connection: null,
         dispatcher: null,
         fila: [],
         estouTocando: false
     }
-}
+
+    saveServer(guild.id);
+});
 
 bot.on("ready", () => {
     console.log('Estou online');
@@ -52,6 +60,8 @@ bot.on("message", async (msg) => {
         msg.member.voice.channel.leave();
         servidores.server.connection = null;
         servidores.server.dispatcher = null;
+        servidores.server.estoutocando = false;
+        servidores.server.fila[];
     }
 
     if (msg.content.startsWith(prefixo + 'play')) {
@@ -249,6 +259,15 @@ const tocarMusicas = () => {
         });
     }
 
+}
+
+
+const saveServer(idNovoServidor) => {
+    fs.readFile('serverList.json', utf8, (err, data) => {
+        if (err) {
+            console.log('Ocorreu um erro ao ler o arquivo para tentar salvar novo id ')
+        }
+    });
 }
 
 bot.login(configs.token_discord);
